@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust - Global Travel Agency</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="style.css">
+
+    </head>
+<body class="bg-gray-50 text-gray-800 antialiased" onload="setupSPA()">
+
+    <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-70 z-[100] hidden items-center justify-center p-4 transition-opacity duration-300" onclick="closeModal(event)">
+        <div class="bg-white rounded-xl p-6 md:p-8 shadow-2xl max-w-sm w-full transform transition-all duration-300 scale-95" onclick="event.stopPropagation()">
+            <h3 id="modalTitle" class="text-2xl font-bold text-sky-600 mb-4">Notification</h3>
+            <p id="modalMessage" class="text-gray-600 mb-6"></p>
+            <button onclick="closeModal()" class="w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition duration-200 shadow-md">
+                Acknowledge
+            </button>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-50 bg-white shadow-lg border-b border-sky-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0">
+                    <a href="#home" onclick="navigate('home')" class="text-3xl font-extrabold text-sky-600 tracking-tight flex items-center">
+                        <i data-lucide="plane" class="w-8 h-8 mr-2 text-sky-500 fill-sky-500 stroke-2"></i>
+                        <span>Wanderlust</span><span class="text-gray-900">Pro</span>
+                    </a>
+                </div>
+
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="navigate('home')" class="nav-link text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out">Home</button>
+                    <button onclick="navigate('destinations')" class="nav-link text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out">Destinations</button>
+                    <button onclick="navigate('about')" class="nav-link text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out">About Us</button>
+                    <button onclick="navigate('gallery')" class="nav-link text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out">Gallery</button>
+                    <button onclick="navigate('register')" class="nav-link text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out">Register</button>
+                    <button onclick="navigate('feedback')" class="nav-link text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out">Feedback</button>
+                    <button onclick="navigate('contact')" class="nav-link text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out">Contact</button>
+                </nav>
+
+                <a href="mailto:hrutushinde2802@gmail.com" class="hidden md:block bg-sky-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-sky-600 transition duration-200 shadow-md">
+                    <i data-lucide="mail" class="w-4 h-4 inline mr-1"></i> Email Us
+                </a>
+
+                <button id="mobileMenuButton" class="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-sky-100 shadow-xl">
+            <div class="px-2 pt-2 pb-3 space-y-1 flex flex-col">
+                <button onclick="navigate('home'); toggleMobileMenu()" class="mobile-nav-link text-gray-700 hover:bg-sky-50 hover:text-sky-700 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Home</button>
+                <button onclick="navigate('destinations'); toggleMobileMenu()" class="mobile-nav-link text-gray-700 hover:bg-sky-50 hover:text-sky-700 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Destinations</button>
+                <button onclick="navigate('about'); toggleMobileMenu()" class="mobile-nav-link text-gray-700 hover:bg-sky-50 hover:text-sky-700 block px-3 py-2 rounded-md text-base font-medium transition duration-150">About Us</button>
+                <button onclick="navigate('gallery'); toggleMobileMenu()" class="mobile-nav-link text-gray-700 hover:bg-sky-50 hover:text-sky-700 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Gallery</button>
+                <button onclick="navigate('register'); toggleMobileMenu()" class="mobile-nav-link text-gray-700 hover:bg-sky-50 hover:text-sky-700 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Register</button>
+                <button onclick="navigate('feedback'); toggleMobileMenu()" class="mobile-nav-link text-gray-700 hover:bg-sky-50 hover:text-sky-700 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Feedback</button>
+                <button onclick="navigate('contact'); toggleMobileMenu()" class="mobile-nav-link text-gray-700 hover:bg-sky-50 hover:text-sky-700 block px-3 py-2 rounded-md text-base font-medium transition duration-150">Contact</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="bg-sky-50 p-3 text-center text-sky-700 font-medium text-sm border-b border-sky-200">
+        <span id="currentDateTime" class="font-bold"></span>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <section id="home" class="page-section active">
+            <div class="hero-bg h-[300px] sm:h-[500px] rounded-xl shadow-2xl relative flex items-center justify-center mb-12">
+                <div class="absolute inset-0 bg-black bg-opacity-40 rounded-xl flex items-center justify-center p-6">
+                    <div class="text-center">
+                        <h1 class="text-4xl sm:text-6xl font-extrabold text-white mb-4 leading-tight">
+                            Your Journey Starts Here
+                        </h1>
+                        <p class="text-xl sm:text-2xl text-sky-100 font-light max-w-2xl mx-auto mb-8">
+                            Experience the world's wonders with premium, tailored travel packages.
+                        </p>
+                        <button onclick="navigate('destinations')" class="bg-white text-sky-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-sky-50 transition duration-300 shadow-xl transform hover:scale-[1.02]">
+                            View Destinations <i data-lucide="compass" class="w-5 h-5 inline ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Travel Inspiration</h2>
+                <div id="carouselContainer" class="relative w-full overflow-hidden rounded-xl shadow-xl">
+                    <div id="carouselSlides" class="flex transition-transform duration-500 ease-in-out">
+                        <div class="carousel-slide w-full flex-shrink-0">
+                            <img src="https://placehold.co/1200x400/38bdf8/ffffff?text=Paris+-+City+of+Lights" onerror="this.onerror=null;this.src='https://placehold.co/1200x400/38bdf8/ffffff?text=Paris+Image+Error';" alt="Paris" class="w-full object-cover h-64 sm:h-96">
+                            <div class="absolute inset-x-0 bottom-0 bg-gray-900 bg-opacity-70 text-white p-4">
+                                <p class="text-xl font-semibold">1. Paris: The Romance of Europe</p>
+                            </div>
+                        </div>
+                        <div class="carousel-slide w-full flex-shrink-0">
+                            <img src="https://placehold.co/1200x400/10b981/ffffff?text=Bali+-+Beaches+and+Temples" onerror="this.onerror=null;this.src='https://placehold.co/1200x400/10b981/ffffff?text=Bali+Image+Error';" alt="Bali" class="w-full object-cover h-64 sm:h-96">
+                            <div class="absolute inset-x-0 bottom-0 bg-gray-900 bg-opacity-70 text-white p-4">
+                                <p class="text-xl font-semibold">2. Bali: Tropical Escape</p>
+                            </div>
+                        </div>
+                        <div class="carousel-slide w-full flex-shrink-0">
+                            <img src="https://placehold.co/1200x400/fcd34d/000000?text=Himalayas+-+Mountain+Trekking" onerror="this.onerror=null;this.src='https://placehold.co/1200x400/fcd34d/000000?text=Himalayas+Image+Error';" alt="Himalayas" class="w-full object-cover h-64 sm:h-96">
+                            <div class="absolute inset-x-0 bottom-0 bg-gray-900 bg-opacity-70 text-white p-4">
+                                <p class="text-xl font-semibold">3. Himalayas: Ultimate Adventure</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="prevBtn" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700 transition duration-200 opacity-70 hover:opacity-100 shadow-lg">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button id="nextBtn" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700 transition duration-200 opacity-70 hover:opacity-100 shadow-lg">
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="destinations" class="page-section hidden">
+            <h1 class="text-4xl font-bold text-center text-sky-700 mb-10">Curated Travel Packages</h1>
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 border-b pb-4">
+                <p class="text-xl text-gray-600 mb-4 sm:mb-0">Find your dream trip:</p>
+                <div class="flex items-center space-x-4">
+                    <label for="sort-select" class="text-gray-700 font-medium">Sort By:</label>
+                    <select id="sort-select" onchange="handleSort()" class="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500">
+                        <option value="default">Default</option>
+                        <option value="price-low">Price: Low to High (₹)</option>
+                        <option value="price-high">Price: High to Low (₹)</option>
+                        <option value="duration">Duration (Longest)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="package-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                </div>
+            
+            <div id="no-results" class="hidden text-center mt-12 p-6 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-lg">
+                <p class="text-xl font-semibold">No packages found matching your criteria.</p>
+            </div>
+        </section>
+        
+        <section id="about" class="page-section hidden">
+            <h1 class="text-4xl font-bold text-center text-sky-700 mb-10">Our Philosophy: Travel with Purpose</h1>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <p class="text-lg text-gray-600">
+                        Wanderlust was founded on the belief that travel is transformative. We specialize in curating journeys that go beyond the tourist trap, offering authentic cultural immersion and sustainable practices. Our team of seasoned travel experts ensures every detail, from flights to local experiences, is perfectly managed.
+                    </p>
+                    <p class="text-lg text-gray-600">
+                        We partner only with eco-conscious vendors and prioritize local community engagement, ensuring your adventure benefits both you and the places you visit. Trust us to handle the complexity, so you can focus on the discovery.
+                    </p>
+                    <button onclick="navigate('contact')" class="bg-sky-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-sky-700 transition duration-300 shadow-md">
+                        Meet Our Team <i data-lucide="users" class="w-4 h-4 inline ml-2"></i>
+                    </button>
+                </div>
+                <div>
+                    <img src="People.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400/94a3b8/ffffff?text=People+Image+Error';" alt="Sustainable Travel" class="rounded-xl shadow-xl w-full">
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="page-section hidden">
+            <h1 class="text-4xl font-bold text-center text-sky-700 mb-10">Multimedia Travel Showcase</h1>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-2xl overflow-hidden">
+                    <h2 class="text-2xl font-semibold text-gray-900 p-4 border-b">Featured Destination Video</h2>
+                    <div class="p-4">
+                          <video controls class="w-full rounded-lg" poster="https://placehold.co/600x300/a5f3fc/000000?text=Explore+Video+Trailer">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-2xl border border-sky-200 h-fit">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Wanderlust Podcast</h2>
+                    <p class="text-gray-600 mb-4">Listen to our latest guide on remote travel planning.</p>
+                    <audio controls class="w-full rounded-lg">
+                        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-white p-8 rounded-xl shadow-2xl border border-sky-200">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Interactive Climate Map (iFrame)</h2>
+                <div class="w-full h-96 rounded-lg overflow-hidden border border-gray-300 shadow-lg">
+                    <iframe
+                        src="https://embed.windy.com/widget.html?lat=20.5937&lon=78.9629&zoom=5&level=surface&overlay=wind&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=20.5937&detailLon=78.9629&metricR=default&metricV=default&metricT=default&metricP=default&colorPalette=default&width=100%&height=100%"
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        title="Interactive Climate Map">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="register" class="page-section hidden">
+            <h1 class="text-4xl font-bold text-center text-sky-700 mb-10">Join Our Traveler Community</h1>
+            
+            <div class="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-2xl border border-sky-200">
+                <form id="registrationForm" onsubmit="handleRegistration(event)">
+                    <div class="mb-5">
+                        <label for="regName" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                        <input type="text" id="regName" name="regName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+                    </div>
+                    <div class="mb-5">
+                        <label for="regEmail" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email" id="regEmail" name="regEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+                    </div>
+                    <div class="mb-6">
+                        <label for="regPref" class="block text-sm font-medium text-gray-700 mb-2">Preferred Travel Style</label>
+                        <select id="regPref" name="regPref" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 transition duration-150 bg-white">
+                            <option value="">Select one</option>
+                            <option value="luxury">Luxury/Relaxation</option>
+                            <option value="adventure">Adventure/Trekking</option>
+                            <option value="cultural">Cultural Immersion</option>
+                            <option value="budget">Budget Friendly</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-sky-600 text-white py-3 rounded-xl font-semibold hover:bg-sky-700 transition duration-300 shadow-md">
+                        <i data-lucide="user-plus" class="w-5 h-5 inline mr-2"></i> Register for Deals
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="feedback" class="page-section hidden">
+            <h1 class="text-4xl font-bold text-center text-sky-700 mb-10">Tell Us About Your Trip</h1>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-2xl border border-sky-200 h-fit">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Leave Feedback</h2>
+                    <form id="feedbackForm" onsubmit="handleFeedback(event)">
+                        <div class="mb-5">
+                            <label for="fbName" class="block text-sm font-medium text-gray-700 mb-2">Your Name (Optional)</label>
+                            <input type="text" id="fbName" name="fbName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 transition duration-150" placeholder="Anonymous">
+                        </div>
+                        <div class="mb-5">
+                            <label for="fbRating" class="block text-sm font-medium text-gray-700 mb-2">Rating (1-5)</label>
+                            <input type="number" id="fbRating" name="fbRating" required min="1" max="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 transition duration-150">
+                        </div>
+                        <div class="mb-6">
+                            <label for="fbComment" class="block text-sm font-medium text-gray-700 mb-2">Comments</label>
+                            <textarea id="fbComment" name="fbComment" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500 transition duration-150"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-sky-600 text-white py-3 rounded-xl font-semibold hover:bg-sky-700 transition duration-300 shadow-md">
+                            <i data-lucide="send" class="w-5 h-5 inline mr-2"></i> Submit Feedback
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-gray-100 p-8 rounded-xl shadow-inner border border-gray-200">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Recent Traveler Reviews (Mock Data)</h2>
+                    <div id="feedbackList" class="space-y-4 max-h-96 overflow-y-auto">
+                        <p class="text-gray-500 text-center py-4">Loading mock feedback...</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4 text-center">Data is simulated in the JavaScript file.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact" class="page-section hidden">
+            <h1 class="text-4xl font-bold text-center text-sky-700 mb-10">Contact Our Global Support Team</h1>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-2xl border border-sky-200 space-y-6 h-fit">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Reach Out</h2>
+                    
+                    <p class="flex items-center text-lg text-gray-700"><i data-lucide="map-pin" class="w-5 h-5 mr-3 text-sky-600"></i> Global HQ: SAKEC, Chembur, Mumbai, India</p>
+                    <p class="flex items-center text-lg text-gray-700"><i data-lucide="phone" class="w-5 h-5 mr-3 text-sky-600"></i> India: +91 9892769255</p>
+                    <a href="mailto:hrutushinde2802@gmail.com" class="flex items-center text-lg text-sky-600 hover:underline"><i data-lucide="mail" class="w-5 h-5 mr-3"></i> hrutushinde2802@gmail.com</a>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 pt-4 border-t">Business Hours</h3>
+                    <p class="text-gray-600">Monday - Saturday: 9:00 AM - 6:00 PM (IST)</p>
+                </div>
+
+                <div class="bg-gray-100 p-8 rounded-xl shadow-2xl border border-gray-200">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Send a Quick Message</h2>
+                    <form onsubmit="event.preventDefault(); showModal('Inquiry Sent', 'Thank you, your message has been received! We will respond shortly.'); event.target.reset();">
+                        <div class="mb-4">
+                            <label for="cName" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                            <input type="text" id="cName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="cMessage" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                            <textarea id="cMessage" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-sky-500 focus:border-sky-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-sky-600 text-white py-3 rounded-xl font-semibold hover:bg-sky-700 transition duration-300 shadow-md">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <div id="booking-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center z-50 p-4" onclick="closeBookingModal(event)">
+        <div class="bg-white rounded-xl shadow-3xl w-full max-w-lg overflow-hidden transform transition-all" onclick="event.stopPropagation()">
+            <div class="p-6">
+                <h3 class="text-2xl font-bold text-gray-800 border-b pb-3 mb-4">Confirm Your Booking</h3>
+                <div id="modal-content-details" class="mb-4">
+                    </div>
+
+                <form id="booking-form" onsubmit="handleBookingSubmit(event)">
+                    <input type="hidden" id="modal-package-id">
+                    <div class="mb-4">
+                        <label for="full-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <input type="text" id="full-name" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500">
+                    </div>
+                    <div class="mb-6">
+                        <label for="travelers" class="block text-sm font-medium text-gray-700">Number of Travelers</label>
+                        <input type="number" id="travelers" min="1" value="1" required class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500">
+                    </div>
+                    
+                    <div id="booking-message" class="text-sm p-3 bg-green-100 text-green-700 rounded-lg hidden mb-4 font-semibold flex items-center"></div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="closeBookingModal()" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 transition duration-150">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-150 shadow-md">
+                            Complete Secure Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-lg font-light">&copy; <span id="currentYear"></span> Wanderlust Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

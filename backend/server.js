@@ -1,21 +1,31 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config(); // ✅ Load environment variables
+
 const connectDB = require('./db');
 const Package = require('./packageModel');
 const Feedback = require('./feedbackModel');
-const Registration = require('./registrationModel'); // <--- RESTORED: Import the Registration Model
+const Registration = require('./registrationModel');
 
-// Initialize the app and DB connection
 const app = express();
+
+// ✅ Connect DB
 connectDB();
 
 // --- Middleware ---
-app.use(cors({ origin: '*' })); 
-app.use(express.json()); // Body parser for application/json
+app.use(cors({
+    origin: '*', // You can restrict this later for security
+}));
+app.use(express.json());
+
+// ✅ Root route (IMPORTANT for deployment)
+app.get('/', (req, res) => {
+    res.send('🌍 Tour & Travel API is running...');
+});
 
 // --- API Routes ---
 
-// GET /api/packages: Fetch all travel packages
+// GET all packages
 app.get('/api/packages', async (req, res) => {
     try {
         const packages = await Package.find();
@@ -26,10 +36,9 @@ app.get('/api/packages', async (req, res) => {
     }
 });
 
-// GET /api/feedback: Fetch recent feedback
+// GET feedback
 app.get('/api/feedback', async (req, res) => {
     try {
-        // Fetch last 10 feedback items, newest first
         const feedback = await Feedback.find().sort({ date: -1 }).limit(10);
         res.json(feedback);
     } catch (err) {
@@ -38,15 +47,15 @@ app.get('/api/feedback', async (req, res) => {
     }
 });
 
-// POST /api/feedback: Submit new feedback (Data stored in MongoDB)
+// POST feedback
 app.post('/api/feedback', async (req, res) => {
-    const newFeedback = new Feedback({
-        name: req.body.name,
-        rating: req.body.rating,
-        comment: req.body.comment
-    });
-
     try {
+        const newFeedback = new Feedback({
+            name: req.body.name,
+            rating: req.body.rating,
+            comment: req.body.comment
+        });
+
         const savedFeedback = await newFeedback.save();
         res.status(201).json(savedFeedback);
     } catch (err) {
@@ -55,41 +64,49 @@ app.post('/api/feedback', async (req, res) => {
     }
 });
 
-// POST /api/register: Store new user registration (Data stored in MongoDB)
+// POST registration
 app.post('/api/register', async (req, res) => {
-    const newRegistration = new Registration({
-        name: req.body.regName, // Mapped from frontend script.js
-        email: req.body.regEmail, // Mapped from frontend script.js
-        preferredTravelStyle: req.body.regPref // Mapped from frontend script.js
-    });
-
     try {
+        const newRegistration = new Registration({
+            name: req.body.regName,
+            email: req.body.regEmail,
+            preferredTravelStyle: req.body.regPref
+        });
+
         const savedRegistration = await newRegistration.save();
+
         console.log("🔔 New User Registered:", savedRegistration.email);
+
         res.status(201).json(savedRegistration);
     } catch (err) {
-        // Handle MongoDB duplicate key error (11000) for unique email constraint
         if (err.code === 11000) {
-            return res.status(409).json({ message: 'Registration failed. This email is already registered.' });
+            return res.status(409).json({
+                message: 'Email already registered'
+            });
         }
-        res.status(400).json({ message: 'Invalid registration data.', error: err.message });
+
+        res.status(400).json({
+            message: 'Invalid registration data',
+            error: err.message
+        });
     }
 });
 
-// POST /api/bookings: Handle booking submission (data logging example)
+// POST bookings
 app.post('/api/bookings', (req, res) => {
-    // In a real application, you would save this to a separate 'Bookings' collection
     console.log('---------------------------------');
-    console.log('🔔 Received New Booking Request:');
-    console.log(`Package ID: ${req.body.packageId}`);
-    console.log(`Customer: ${req.body.fullName}`);
-    console.log(`Email: ${req.body.email}`);
-    console.log(`Travelers: ${req.body.travelers}`);
+    console.log('🔔 New Booking Request:');
+    console.log(req.body);
     console.log('---------------------------------');
 
-    res.status(200).json({ message: 'Booking received for processing.' });
+    res.status(200).json({
+        message: 'Booking received successfully'
+    });
 });
 
-
+// ✅ PORT for Render
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🌍 Server running on http://localhost:${PORT}`));
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});

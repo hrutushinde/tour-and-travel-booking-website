@@ -5,13 +5,6 @@ The project demonstrates backend development using **Node.js, Express, and Mongo
 
 ---
 
-## 🚀 Live Demo
-
-Frontend: https://your-frontend-link.netlify.app
-Backend API: https://your-backend-link.onrender.com
-
----
-
 ## ✨ Features
 
 * 🌍 Browse available tour packages
@@ -97,17 +90,6 @@ Create a `.env` file in the backend folder.
 
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
-
----
-
-## 📸 Screenshots
-
-Add screenshots of your project here.
-
-Example:
-
-screenshots/homepage.png
-screenshots/booking.png
 
 ---
 
